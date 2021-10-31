@@ -54,9 +54,18 @@ loop1
 	push cx
 	mov ax, 0xe00
     mov es, ax
-    xor ax,ax ; clear ax because al and ah are used below separately
 
-    mov ah, 0x0
+    ; we're reading into segment es==0x0E00, and offset bx==0
+    ; That's a memory address 0xE000 for the start of the kernel binary
+    ; The kernel code starts at 0x100 bytes into the binary, before that
+    ; is ELF headers.  So when we call that kernel code, we'll call
+    ; it at 0xE000 + 0x0100 = 0xE100
+    ; I don't have a good reason to choose that particualr segment 0x0E00
+    ; It worked and I stuck with it.  This could probably be optimized
+    ; if you absolutely positively have to print fizzbuzz on something
+    ; with only a couple KB of memory.
+
+    xor ax,ax
     mov dl, 0x0 ; drive number
     int 0x13 ; reset the drive
     mov ah, 0x2 ; read command
