@@ -2,3 +2,5 @@
 *.conf
 *.o
 *.bin
+*.fdd
+kernel
